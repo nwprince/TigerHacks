@@ -5,10 +5,13 @@ import { StyleSheet, View, StatusBar } from 'react-native';
 import { Input, Icon, Item } from 'native-base';
 // import Constants from './Constants';
 
-export default class AppBar extends React.Component {
+interface IAppBarProps {
+  callback: any
+}
+
+export default class AppBar extends React.Component<IAppBarProps, {}> {
   state: {
     search: string;
-    isLoading: boolean;
   };
 
   handleInput = (text: string) => {
@@ -16,8 +19,9 @@ export default class AppBar extends React.Component {
   }
 
   handleEnter = (e: any) => {
+    e = e;
     console.log(this.state.search);
-    this.setState({ isLoading: true });
+    this.props.callback(this.state.search);
   }
 
   render() {
