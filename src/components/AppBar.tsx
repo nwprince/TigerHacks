@@ -1,17 +1,36 @@
 import React from 'react';
-import { StyleSheet, View, Text, StatusBar } from 'react-native';
-import { Icon } from 'native-base';
-import Constants from './Constants';
+import { StyleSheet, View, StatusBar } from 'react-native';
+import { Input, Icon, Item } from 'native-base';
+// import Constants from './Constants';
 
 export default class AppBar extends React.Component {
-  static render() {
+  state: {
+    search: string;
+    isLoading: boolean;
+  };
+
+  handleInput = (text: string) => {
+    this.setState({ search: text });
+  }
+
+  handleEnter = (e: any) => {
+    console.log(this.state.search);
+    this.setState({ isLoading: true });
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         <View style={styles.statusBar} />
         <View style={styles.appBar}>
-          <Icon style={styles.icon}  name='search' />
-          <Text style={styles.text}>{Constants.AppName}</Text>
-          <Icon style={styles.icon} name='user' />
+          <Item style={{ marginLeft: 10 }}>
+            <Icon active name='search' />
+            <Input
+              placeholder='Search for an article'
+              onChangeText={this.handleInput}
+              onSubmitEditing={this.handleEnter}
+            />
+          </Item>
         </View>
       </View>
     );
