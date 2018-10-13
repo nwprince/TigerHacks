@@ -14,6 +14,7 @@ export default class AppBar extends React.Component {
   }
 
   handleEnter = (e: any) => {
+    e;
     console.log(this.state.search);
     this.setState({ isLoading: true });
   }
