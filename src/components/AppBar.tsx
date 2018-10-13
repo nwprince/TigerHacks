@@ -1,3 +1,5 @@
+/* tslint: disable */
+
 import React from 'react';
 import { StyleSheet, View, StatusBar } from 'react-native';
 import { Input, Icon, Item } from 'native-base';
@@ -14,7 +16,6 @@ export default class AppBar extends React.Component {
   }
 
   handleEnter = (e: any) => {
-    e;
     console.log(this.state.search);
     this.setState({ isLoading: true });
   }
