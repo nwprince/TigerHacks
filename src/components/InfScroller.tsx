@@ -1,9 +1,8 @@
 /* tslint:disable */
 
 import React from 'react';
-import { View, FlatList, StatusBar, Text, Image } from 'react-native';
-import { Card, CardItem } from 'native-base'
-import Constants from './Constants';
+import { View, FlatList, Text, Image } from 'react-native';
+import { Card, CardItem } from 'native-base';
 
 export interface ICardProps {
     imageUrl: string;
