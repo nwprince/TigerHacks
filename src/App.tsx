@@ -10,6 +10,7 @@ interface IAppState {
 
 export default class App extends React.Component<{}, IAppState> {
   private queryData: any;
+  private image: any;
 
   constructor(props: any) {
     super(props);
@@ -60,6 +61,19 @@ export default class App extends React.Component<{}, IAppState> {
     }).catch(e => {
       console.log(e);
       Alert.alert('Error', 'Server is offline');
+    });
+  }
+
+  fetchImageFromKeyword(keyword: string) {
+    fetch('https://api.unsplash.com/photos/random?client_id=' + Constants.UnsplashKey + '&' + 'page=1&query=' + keyword)
+    .then(this.checkStatus)
+    .then(response => {
+      return response.json();
+    }).then(data => {
+      this.image = data.urls.regular;
+      console.log(this.image);
+    }).catch(e => {
+      console.log(e);
     });
   }
 
