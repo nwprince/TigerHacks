@@ -12,7 +12,7 @@ interface IAppState {
 
 export default class App extends React.Component<{}, IAppState> {
   private queryData: any;
-  private image: any;
+  private image: any[];
   private cardData: ICardProps[] = [];
 
   constructor(props: any) {
@@ -24,7 +24,9 @@ export default class App extends React.Component<{}, IAppState> {
     };
 
     this.fetchInitial(Constants.InitialTopics);
-    this.fetchImageFromKeyword('boat');
+    for (let i = 0; i < Constants.InitialTopics.length; i++) {
+      this.fetchImageFromKeyword(Constants.InitialTopics[i], 3);
+    }
   }
 
   resetQueue = () => {
@@ -37,7 +39,7 @@ export default class App extends React.Component<{}, IAppState> {
     console.log('success');
     this.setState({ isLoadingSearch: true, isLoadingImages: true });
     this.fetchFromQuery(text);
-    this.fetchImageFromKeyword(text);
+    this.fetchImageFromKeyword(text, 10);
   }
 
   fetchFromQuery(query: string) {
@@ -76,13 +78,22 @@ export default class App extends React.Component<{}, IAppState> {
       });
   }
 
-  fetchImageFromKeyword(keyword: string) {
-    fetch('https://api.unsplash.com/photos/random?client_id=' + Constants.UnsplashKey + '&' + 'page=1&query=' + keyword)
+  fetchImageFromKeyword(keyword: string, count: number) {
+    this.image = [];
+    fetch('https://pixabay.com/api?key=' + Constants.UnsplashKey + '&' + '&q=' + keyword)
       .then(this.checkStatus)
       .then(response => {
         return response.json();
       }).then(data => {
-        this.image = data.urls.regular;
+        let num: number = 0;
+        if (data.hits.length < count) {
+          num = data.hits.length;
+        } else {
+          num = count;
+        }
+        for (let i = 0; i < num; i++) {
+        this.image.push(data.hits[i].webformatURL);
+        }
         this.setState({ isLoadingImages: false });
       }).catch(e => {
         console.log(e);
@@ -97,6 +108,10 @@ export default class App extends React.Component<{}, IAppState> {
     }
   }
 
+  onlyUnique(value: any, index: any, self: any) {
+    return self.indexOf(value) === index;
+  }
+
   render() {
     let ActivityElement: any = undefined;
     let scrollable: any = undefined;
@@ -104,13 +119,15 @@ export default class App extends React.Component<{}, IAppState> {
     if (this.state.isLoadingSearch || this.state.isLoadingImages) {
       ActivityElement = <ActivityIndicator size='large' />;
     } else {
+      this.image = this.image.filter ( this.onlyUnique);
+      console.log('image: ', this.image);
       for (let i: number = 0; i < this.queryData.length; i++) {
         for (let j: number = 0; j < this.queryData[i].length; j++) {
           const newCard: ICardProps = {
             body: this.queryData[i][j][2],
             title: this.queryData[i][j][1],
             pdf_link: this.queryData[i][j][0],
-            imageUrl: this.image,
+            imageUrl: this.image[j],
             key: this.queryData[i][j][1]
           };
 
