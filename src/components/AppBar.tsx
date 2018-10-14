@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     height: StatusBar.currentHeight + 56,
-    backgroundColor: '#fff',
     alignItems: 'stretch',
     justifyContent: 'center'
   },
@@ -60,6 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     margin: 6,
+    marginLeft: 15, marginRight: 15,
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
