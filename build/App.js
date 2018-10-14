@@ -18,9 +18,10 @@ export default class App extends React.Component {
             this.fetchFromQuery(text);
             this.fetchImageFromKeyword(text);
         };
+        this.resetQueue();
         this.state = {
             isLoadingSearch: true,
-            isLoadingImages: true
+            isLoadingImages: false
         };
         this.fetchInitial(Constants.InitialTopics);
         this.fetchImageFromKeyword('boat');
@@ -65,14 +66,12 @@ export default class App extends React.Component {
             return response.json();
         }).then(data => {
             this.image = data.urls.regular;
-            console.log('THE IMAGE', this.image);
             this.setState({ isLoadingImages: false });
         }).catch(e => {
             console.log(e);
         });
     }
     checkStatus(response) {
-        console.log('From CheckState: ', response);
         if (response.ok) {
             return response;
         }
@@ -102,8 +101,7 @@ export default class App extends React.Component {
             scrollable = React.createElement(View, { style: style.scroller },
                 React.createElement(InfScroller, { data: this.cardData }));
         }
-        console.log('HERE ASSHOLE: ', this.state);
-        return (React.createElement(View, { style: { flex: 1 } },
+        return (React.createElement(View, { style: style.main },
             scrollable,
             React.createElement(View, { style: style.overlay },
                 React.createElement(AppBar, { callback: this.handleSearchPress }),
@@ -116,6 +114,10 @@ const style = StyleSheet.create({
         top: 0, left: 0, right: 0, bottom: 0
     },
     scroller: {
+        flex: 1
+    },
+    main: {
+        backgroundColor: '#4e4e3e',
         flex: 1
     }
 });
