@@ -8,7 +8,7 @@ export default class App extends React.Component {
         super(props);
         this.cardData = [];
         this.resetQueue = () => {
-            this.cardData = [];
+            this.cardData = [{ key: 'BLANK', title: '', imageUrl: '', body: '', pdf_link: '' }];
             this.image = undefined;
         };
         this.handleSearchPress = (text) => {
@@ -16,7 +16,7 @@ export default class App extends React.Component {
             console.log('success');
             this.setState({ isLoadingSearch: true, isLoadingImages: true });
             this.fetchFromQuery(text);
-            this.fetchImageFromKeyword(text);
+            this.fetchImageFromKeyword(text, 10);
         };
         this.resetQueue();
         this.state = {
@@ -24,7 +24,9 @@ export default class App extends React.Component {
             isLoadingImages: false
         };
         this.fetchInitial(Constants.InitialTopics);
-        this.fetchImageFromKeyword('boat');
+        for (let i = 0; i < Constants.InitialTopics.length; i++) {
+            this.fetchImageFromKeyword(Constants.InitialTopics[i], 3);
+        }
     }
     fetchFromQuery(query) {
         this.resetQueue();
@@ -59,13 +61,23 @@ export default class App extends React.Component {
             Alert.alert('Error', 'Server is offline');
         });
     }
-    fetchImageFromKeyword(keyword) {
-        fetch('https://api.unsplash.com/photos/random?client_id=' + Constants.UnsplashKey + '&' + 'page=1&query=' + keyword)
+    fetchImageFromKeyword(keyword, count) {
+        this.image = [];
+        fetch('https://pixabay.com/api?key=' + Constants.UnsplashKey + '&' + '&q=' + keyword)
             .then(this.checkStatus)
             .then(response => {
             return response.json();
         }).then(data => {
-            this.image = data.urls.regular;
+            let num = 0;
+            if (data.hits.length < count) {
+                num = data.hits.length;
+            }
+            else {
+                num = count;
+            }
+            for (let i = 0; i < num; i++) {
+                this.image.push(data.hits[i].webformatURL);
+            }
             this.setState({ isLoadingImages: false });
         }).catch(e => {
             console.log(e);
@@ -79,6 +91,9 @@ export default class App extends React.Component {
             throw response;
         }
     }
+    onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
     render() {
         let ActivityElement = undefined;
         let scrollable = undefined;
@@ -86,13 +101,15 @@ export default class App extends React.Component {
             ActivityElement = React.createElement(ActivityIndicator, { size: 'large' });
         }
         else {
+            this.image = this.image.filter(this.onlyUnique);
+            console.log('image: ', this.image);
             for (let i = 0; i < this.queryData.length; i++) {
                 for (let j = 0; j < this.queryData[i].length; j++) {
                     const newCard = {
                         body: this.queryData[i][j][2],
                         title: this.queryData[i][j][1],
                         pdf_link: this.queryData[i][j][0],
-                        imageUrl: this.image,
+                        imageUrl: this.image[j],
                         key: this.queryData[i][j][1]
                     };
                     this.cardData.push(newCard);

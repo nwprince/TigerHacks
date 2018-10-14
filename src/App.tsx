@@ -30,7 +30,7 @@ export default class App extends React.Component<{}, IAppState> {
   }
 
   resetQueue = () => {
-    this.cardData = [];
+    this.cardData = [{ key: 'BLANK', title: '', imageUrl: '', body: '', pdf_link: '' }];
     this.image = undefined;
   }
 
@@ -92,7 +92,7 @@ export default class App extends React.Component<{}, IAppState> {
           num = count;
         }
         for (let i = 0; i < num; i++) {
-        this.image.push(data.hits[i].webformatURL);
+          this.image.push(data.hits[i].webformatURL);
         }
         this.setState({ isLoadingImages: false });
       }).catch(e => {
@@ -119,7 +119,7 @@ export default class App extends React.Component<{}, IAppState> {
     if (this.state.isLoadingSearch || this.state.isLoadingImages) {
       ActivityElement = <ActivityIndicator size='large' />;
     } else {
-      this.image = this.image.filter ( this.onlyUnique);
+      this.image = this.image.filter(this.onlyUnique);
       console.log('image: ', this.image);
       for (let i: number = 0; i < this.queryData.length; i++) {
         for (let j: number = 0; j < this.queryData[i].length; j++) {
