@@ -1,8 +1,9 @@
 import React from 'react';
 import AppBar from './components/AppBar';
 
-import { ActivityIndicator, View, Alert } from 'react-native';
+import { ActivityIndicator, View, Alert, StyleSheet } from 'react-native';
 import Constants from './components/Constants';
+import { InfScroller } from './components/InfScroller';
 
 interface IAppState {
   isLoadingSearch: boolean;
@@ -32,7 +33,7 @@ export default class App extends React.Component<{}, IAppState> {
       return response.json();
     }).then(this.checkStatus).then(response => {
       this.queryData = response;
-      this.setState({isLoadingSearch: false});
+      this.setState({ isLoadingSearch: false });
     }).catch(e => {
       console.log(e);
       Alert.alert('Error', 'Server is offline');
@@ -52,15 +53,15 @@ export default class App extends React.Component<{}, IAppState> {
     queryString = queryString.slice(0, queryString.length - 1);
     console.log(queryString);
     fetch(queryString).then(this.checkStatus)
-    .then(response => {
-      return response.json();
-    }).then(data => {
-      this.queryData = data;
-      this.setState({isLoadingSearch: false});
-    }).catch(e => {
-      console.log(e);
-      Alert.alert('Error', 'Server is offline');
-    });
+      .then(response => {
+        return response.json();
+      }).then(data => {
+        this.queryData = data;
+        this.setState({ isLoadingSearch: false });
+      }).catch(e => {
+        console.log(e);
+        Alert.alert('Error', 'Server is offline');
+      });
   }
 
   checkStatus(response: Response) {
@@ -82,9 +83,36 @@ export default class App extends React.Component<{}, IAppState> {
 
     return (
       <View>
-        <AppBar callback={this.handleSearchPress} />
-        {ActivityElement}
+        <View
+          style={{}}
+        >
+          <InfScroller
+            data={[{
+              key: '1',
+              imageUrl: 'https://i.redd.it/m8b8azv2axr11.jpg',
+              title: 'Dick sniffles',
+              body: 'My dick is sniffling',
+              pdf_link: 'http://bing.com/'
+            }]}
+          />
+        </View>
+        <View
+          style={style.overlay}
+        >
+          <AppBar callback={this.handleSearchPress} />
+          {ActivityElement}
+        </View>
       </View>
     );
   }
 }
+
+let style = StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0
+  },
+  scroller: {
+    flex: 1
+  }
+});
